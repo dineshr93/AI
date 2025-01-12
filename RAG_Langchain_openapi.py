@@ -11,6 +11,7 @@ import gradio as gr
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.schema import Document
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langchain_community.vectorstores import FAISS
@@ -19,6 +20,7 @@ from sklearn.manifold import TSNE
 import plotly.graph_objects as go
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from langchain_core.callbacks import StdOutCallbackHandler
 
 # price is a factor for our company, so we're going to use a low cost model
 
@@ -59,8 +61,9 @@ chunks = text_splitter.split_documents(documents)
 
 # Put the chunks of data into a Vector Store that associates a Vector Embedding with each chunk
 # Chroma is a popular open source Vector Database based on SQLLite
-
-embeddings = OpenAIEmbeddings()
+# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+# embeddings = OpenAIEmbeddings()
 
 # If you would rather use the free Vector Embeddings from HuggingFace sentence-transformers
 # Then replace embeddings = OpenAIEmbeddings()
@@ -94,9 +97,10 @@ llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
 memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
 
 # the retriever is an abstraction over the VectorStore that will be used during RAG
-retriever = vectorstore.as_retriever()
+retriever = vectorstore.as_retriever(search_kwargs={"k":500})
 
 # putting it together: set up the conversation chain with the GPT 4o-mini LLM, the vector store and memory
+# conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=retriever, memory=memory,callbacks=[StdOutCallbackHandler()])
 conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=retriever, memory=memory)
 
 # Wrapping in a function - note that history isn't used, as the memory is in the conversation_chain

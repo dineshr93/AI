@@ -61,9 +61,9 @@ chunks = text_splitter.split_documents(documents)
 # Put the chunks of data into a Vector Store that associates a Vector Embedding with each chunk
 # Chroma is a popular open source Vector Database based on SQLLite
 
-# embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings()
 # embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 # If you would rather use the free Vector Embeddings from HuggingFace sentence-transformers
 # Then replace embeddings = OpenAIEmbeddings()
 # with:
