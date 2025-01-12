@@ -13,6 +13,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.schema import Document
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 import numpy as np
 from sklearn.manifold import TSNE
 import plotly.graph_objects as go
@@ -74,8 +75,16 @@ if os.path.exists(db_name):
 
 # Create vectorstore
 
-vectorstore = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=db_name)
-print(f"Vectorstore created with {vectorstore._collection.count()} documents")
+# vectorstore = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=db_name)
+vectorstore = FAISS.from_documents(documents=chunks, embedding=embeddings)
+
+total_vectors=vectorstore.index.ntotal
+
+dimensions=vectorstore.index.d
+
+print(f"There are {total_vectors} vectors with {dimensions} dimensions in vector store")
+
+# print(f"Vectorstore created with {vectorstore._collection.count()} documents")
 
 
 # create a new Chat with OpenAI

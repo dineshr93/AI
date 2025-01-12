@@ -21,8 +21,9 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain_anthropic import ChatAnthropic # Anthropic Chat model
 
 # price is a factor for our company, so we're going to use a low-cost model
-
-MODEL = "claude-3-5-sonnet-latest"  # Use the appropriate Claude model version (e.g., claude-v1, claude-v2)
+# https://docs.anthropic.com/en/docs/about-claude/models
+# https://console.anthropic.com/settings/billing
+MODEL = "claude-3-opus-20240229"  # Use the appropriate Claude model version (e.g., claude-v1, claude-v2)
 db_name = "vector_db"
 
 # Load environment variables in a file called .env
@@ -30,6 +31,7 @@ db_name = "vector_db"
 load_dotenv()
 os.environ['ANTHROPIC_API_KEY'] = os.getenv('ANTHROPIC_API_KEY', 'your-key-if-not-using-env')
 os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY', 'your-key-if-not-using-env')
+os.environ['HF_TOKEN'] = os.getenv('HF_TOKEN', 'your-key-if-not-using-env')
 # Read in documents using LangChain's loaders
 # Take everything in all the sub-folders of our knowledgebase
 
@@ -60,7 +62,8 @@ chunks = text_splitter.split_documents(documents)
 # Chroma is a popular open source Vector Database based on SQLLite
 
 # embeddings = OpenAIEmbeddings()
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 # If you would rather use the free Vector Embeddings from HuggingFace sentence-transformers
 # Then replace embeddings = OpenAIEmbeddings()
 # with:
