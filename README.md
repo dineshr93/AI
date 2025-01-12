@@ -6,3 +6,6 @@
 
 ## In progress:
 - copyright_detector.py
+
+
+credits: https://github.com/ed-donner/llm_engineering
